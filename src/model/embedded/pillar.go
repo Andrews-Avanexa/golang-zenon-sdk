@@ -1,5 +1,11 @@
 package embedded
 
+import (
+	"math/big"
+
+	"github.com/Andrews-Avanexa/golang-zenon-sdk/src/model/primitives"
+)
+
 type PillarInfo struct {
 	Name string `json:"name"`
 	Rank int    `json:"rank"`
@@ -36,7 +42,7 @@ type PillarEpochHistoryList struct {
 }
 
 // User delegation
-type GetDelegatedPillarResponse struct {
+type DelegationInfo struct {
 	Name       string   `json:"name"`
 	NodeStatus uint8    `json:"status"`
 	Balance    *big.Int `json:"weight"`
