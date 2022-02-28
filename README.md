@@ -6,6 +6,8 @@ BIP39 is the use of a mnemonic phrase to serve as a backup to recover your walle
 
 BIP44 defines the standard derivation path for wallets that generate Pay-to-Public-Key-Hash (P2PKH) addresses.
 
+Also has model where you can check Process,Os,Reward,Reward,RewardHistory,Plasma,Pillar,Token,etc. - Info and Response
+
 # Example
 
 ```go
