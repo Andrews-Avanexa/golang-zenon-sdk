@@ -21,16 +21,6 @@ bs := []byte(key_store)
 json.Unmarshal(bs, &ks)
 ```
 
-```go
-fmt.Println("Mnemonic:", ks.Mnemonic)
-fmt.Println("Entropy:", ks.Entropy)
-fmt.Println("Seed:", ks.Seed)
-fmt.Println("Private Key:", ks.PrivateKey)
-fmt.Println("Public Key:", ks.PublicKey)
-fmt.Println("Address:", ks.Address)
-fmt.Println("Core Byte:", ks.CoreBytes)
-```
-
 # Output
 
 ```go
