@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func Arraycopy(src []int, startPos int, dest []int, destPos int, len int) []int {
+func Arraycopy(src []byte, startPos int, dest []byte, destPos int, len int) []byte {
 	for i := 0; i < len; i++ {
 		dest[destPos+i] = src[startPos+i]
 	}
@@ -24,10 +24,10 @@ func DecodeBigInt(bytes []int64) *big.Int {
 	return result
 }
 
-func EncodeBigInt(number *big.Int) []int {
+func EncodeBigInt(number *big.Int) []byte {
 
 	size := (number.BitLen() + 7) >> 3
-	result := make([]int, size)
+	result := make([]byte, size)
 	for i := 0; i < size; i++ {
 		result[i] = 0
 	}
@@ -36,8 +36,8 @@ func EncodeBigInt(number *big.Int) []int {
 		var limit big.Int
 		limit.And(number, _byteMask)
 		byteToInt, _ := strconv.Atoi(string(limit.Bytes()))
-		result[size-i-1] = byteToInt
-		number := big.NewInt(int64(byteToInt >> 8))
+		result[size-i-1] = byte(byteToInt)
+		number = big.NewInt(int64(byteToInt >> 8))
 	}
 	return result
 }
@@ -50,8 +50,8 @@ func Min(v1 int, v2 int) int {
 	return min
 }
 
-func BigIntToBytes(b *big.Int, numBytes int) []int {
-	var bytes = make([]int, numBytes)
+func BigIntToBytes(b *big.Int, numBytes int) []byte {
+	var bytes = make([]byte, numBytes)
 	for i := 0; i < numBytes; i++ {
 		bytes[i] = 0
 	}
@@ -65,8 +65,8 @@ func BigIntToBytes(b *big.Int, numBytes int) []int {
 	Arraycopy(biBytes, start, bytes, dest, length)
 	return bytes
 }
-func BigIntToBytesSigned(b *big.Int, numBytes int) []int {
-	var bytes = make([]int, numBytes)
+func BigIntToBytesSigned(b *big.Int, numBytes int) []byte {
+	var bytes = make([]byte, numBytes)
 	var biBytes = EncodeBigInt(b)
 	var start int = 1
 	if len(biBytes) == numBytes+1 {
@@ -86,15 +86,15 @@ func BytesToBigInt(bb []int64) *big.Int {
 	}
 }
 
-func Merge(arrays [][]int) []int {
+func Merge(arrays [][]byte) []byte {
 	count := 0
 	for _, array := range arrays {
 		count += len(array)
 	}
 	if count == 0 {
-		return []int{}
+		return []byte{}
 	}
-	mergedArray := make([]int, count)
+	mergedArray := make([]byte, count)
 	start := 0
 	for _, array := range arrays {
 		if len(array) > 0 {
@@ -143,12 +143,12 @@ func BytesToHex(bytes []byte) string {
 	return hex.EncodeToString(bytes)
 }
 
-func LeftPadBytes(bytes []int, size int) []int {
+func LeftPadBytes(bytes []byte, size int) []byte {
 
 	if len(bytes) >= size {
 		return bytes
 	}
-	var result = make([]int, size)
+	var result = make([]byte, size)
 	for i := 0; i < size; i++ {
 		result[i] = 0
 	}
