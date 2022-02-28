@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/zenon-network/go-zenon/common"
+	"github.com/Andrews-Avanexa/golang-zenon-sdk/src/common"
 )
 
 var (

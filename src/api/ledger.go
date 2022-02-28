@@ -6,23 +6,13 @@ import (
 	"github.com/inconshreveable/log15"
 	"github.com/pkg/errors"
 
+	"github.com/Andrews-Avanexa/golang-zenon-sdk/src/common"
+	"github.com/Andrews-Avanexa/golang-zenon-sdk/src/model/primitives"
 	"github.com/zenon-network/go-zenon/chain"
 	"github.com/zenon-network/go-zenon/chain/nom"
-	"github.com/zenon-network/go-zenon/common"
-	"github.com/zenon-network/go-zenon/common/types"
 	"github.com/zenon-network/go-zenon/vm"
 	"github.com/zenon-network/go-zenon/zenon"
 )
-
-func NewLedgerApi(z zenon.Zenon) *LedgerApi {
-	api := &LedgerApi{
-		z:     z,
-		chain: z.Chain(),
-		log:   common.RPCLogger.New("module", "ledger_api"),
-	}
-
-	return api
-}
 
 type LedgerApi struct {
 	z     zenon.Zenon
@@ -74,7 +64,7 @@ func (l *LedgerApi) PublishRawTransaction(block *AccountBlock) error {
 }
 
 // Unconfirmed AccountBlocks
-func (l *LedgerApi) GetUnconfirmedBlocksByAddress(address types.Address, pageIndex, pageSize uint32) (*AccountBlockList, error) {
+func (l *LedgerApi) GetUnconfirmedBlocksByAddress(address primitives.Address, pageIndex, pageSize uint32) (*AccountBlockList, error) {
 	if pageSize > RpcMaxPageSize {
 		return nil, ErrPageSizeParamTooBig
 	}
@@ -95,7 +85,7 @@ func (l *LedgerApi) GetUnconfirmedBlocksByAddress(address types.Address, pageInd
 }
 
 // AccountBlocks
-func (l *LedgerApi) GetFrontierAccountBlock(address types.Address) (*AccountBlock, error) {
+func (l *LedgerApi) GetFrontierAccountBlock(address primitives.Address) (*AccountBlock, error) {
 	accountStore := l.chain.GetFrontierAccountStore(address)
 	block, err := accountStore.Frontier()
 	if err != nil {
@@ -106,7 +96,7 @@ func (l *LedgerApi) GetFrontierAccountBlock(address types.Address) (*AccountBloc
 	}
 	return ledgerAccountBlockToRpc(l.chain, block)
 }
-func (l *LedgerApi) GetAccountBlockByHash(blockHash types.Hash) (*AccountBlock, error) {
+func (l *LedgerApi) GetAccountBlockByHash(blockHash primitives.Hash) (*AccountBlock, error) {
 	momentumStore := l.chain.GetFrontierMomentumStore()
 	block, err := momentumStore.GetAccountBlockByHash(blockHash)
 	if err != nil {
@@ -119,7 +109,7 @@ func (l *LedgerApi) GetAccountBlockByHash(blockHash types.Hash) (*AccountBlock, 
 
 	return ledgerAccountBlockToRpc(l.chain, block)
 }
-func (l *LedgerApi) GetAccountBlocksByHeight(address types.Address, height, count uint64) (*AccountBlockList, error) {
+func (l *LedgerApi) GetAccountBlocksByHeight(address primitives.Address, height, count uint64) (*AccountBlockList, error) {
 	if height == 0 {
 		return nil, ErrHeightParamIsZero
 	}
@@ -157,7 +147,7 @@ func (l *LedgerApi) GetAccountBlocksByHeight(address types.Address, height, coun
 		Count: int(frontier.Height),
 	}, nil
 }
-func (l *LedgerApi) GetAccountBlocksByPage(address types.Address, pageIndex, pageSize uint32) (*AccountBlockList, error) {
+func (l *LedgerApi) GetAccountBlocksByPage(address primitives.Address, pageIndex, pageSize uint32) (*AccountBlockList, error) {
 	if pageSize > RpcMaxPageSize {
 		return nil, ErrPageSizeParamTooBig
 	}
@@ -200,7 +190,7 @@ func (l *LedgerApi) GetAccountBlocksByPage(address types.Address, pageIndex, pag
 	}
 	return ans, nil
 }
-func (l *LedgerApi) GetAccountInfoByAddress(address types.Address) (*AccountInfo, error) {
+func (l *LedgerApi) GetAccountInfoByAddress(address primitives.Address) (*AccountInfo, error) {
 	l.log.Info("GetAccountInfoByAddress")
 
 	momentumStore := l.chain.GetFrontierMomentumStore()
@@ -222,7 +212,7 @@ func (l *LedgerApi) GetAccountInfoByAddress(address types.Address) (*AccountInfo
 		return nil, err
 	}
 
-	balanceInfoMap := make(map[types.ZenonTokenStandard]*BalanceInfo)
+	balanceInfoMap := make(map[primitives.ZenonTokenStandard]*BalanceInfo)
 
 	for zts, balance := range balanceMap {
 		tokenInfo, _ := momentumStore.GetTokenInfoByTs(zts)
@@ -242,7 +232,7 @@ func (l *LedgerApi) GetAccountInfoByAddress(address types.Address) (*AccountInfo
 		BalanceInfoMap: balanceInfoMap,
 	}, nil
 }
-func (l *LedgerApi) GetUnreceivedBlocksByAddress(address types.Address, pageIndex, pageSize uint32) (*AccountBlockList, error) {
+func (l *LedgerApi) GetUnreceivedBlocksByAddress(address primitives.Address, pageIndex, pageSize uint32) (*AccountBlockList, error) {
 	l.log.Info("GetUnreceivedBlocksByAddress", "address", address, "page", pageIndex, "size", pageSize)
 	if pageSize > unreceivedMaxPageSize {
 		return nil, ErrPageSizeParamTooBig
@@ -308,7 +298,7 @@ func (l *LedgerApi) GetMomentumBeforeTime(timestamp int64) (*Momentum, error) {
 
 	return ledgerMomentumToRpc(momentum)
 }
-func (l *LedgerApi) GetMomentumByHash(hash types.Hash) (*Momentum, error) {
+func (l *LedgerApi) GetMomentumByHash(hash primitives.Hash) (*Momentum, error) {
 	block, err := l.chain.GetFrontierMomentumStore().GetMomentumByHash(hash)
 	if err != nil {
 		l.log.Error("GetMomentumByHash failed, error is "+err.Error(), "method", "GetMomentumByHash")
